@@ -1,0 +1,32 @@
+stages:
+  - build
+  - deploy
+
+build_box:
+  stage: build
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y virtualbox vagrant
+  script:
+    - vagrant up --privoder virtualbox 
+
+deploy_vm:
+  stage: deploy
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y virtualbox vagrant sshpass # Установка sshpass
+  script:
+    - vagrant ssh web -c "echo 'Hello from web server' > /tmp/hello.txt"  # Пример команды для web сервера
+    - vagrant ssh db -c "sudo apt-get update" # Пример команды для db сервера
+    - vagrant ssh web -c "cat /tmp/hello.txt"  # Вывод содержимого файла
+  dependencies:
+    - build_box
+  when: manual
+  environment:
+    name: production
+  variables:
+    VAGRANT_DEFAULT_PROVIDER: virtualbox
+
+cache:
+  paths:
+    - .vagrant/
