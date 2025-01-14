@@ -16,9 +16,9 @@ deploy_vm:
   before_script:
     - apt-get update && apt-get install -y virtualbox vagrant sshpass # Установка sshpass
   script:
-    - vagrant ssh web -c "echo 'Hello from web server' > /tmp/hello.txt"  # Пример команды для web сервера
-    - vagrant ssh db -c "sudo apt-get update" # Пример команды для db сервера
-    - vagrant ssh web -c "cat /tmp/hello.txt"  # Вывод содержимого файла
+    - vagrant ssh ansible -c "echo 'Hello from web server' > /tmp/hello.txt"
+    - vagrant ssh jenkins -c "sudo apt-get update"
+    - vagrant ssh ansible -c "cat /tmp/hello.txt"
   dependencies:
     - build_box
   when: manual
